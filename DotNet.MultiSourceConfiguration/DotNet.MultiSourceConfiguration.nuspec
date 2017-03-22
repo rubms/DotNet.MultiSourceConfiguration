@@ -16,6 +16,5 @@
 	</metadata>
 	<files>
 		<file src="bin\Release\DotNet.MultiSourceConfiguration.dll" target="lib\net451" />
-		<file src="bin\Release\DotNet.MultiSourceConfiguration.xml" target="lib\net451" />
 	</files>  
 </package>

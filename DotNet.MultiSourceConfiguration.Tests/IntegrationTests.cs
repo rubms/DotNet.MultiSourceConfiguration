@@ -14,6 +14,18 @@ namespace DotNet.MultiSourceConfiguration.Tests
 
             [Property("test.string.propery")]
             string StringProperty { get; }
+
+            [Property("test.long.property")]
+            long? LongProperty { get; }
+
+            [Property("test.decimal.property")]
+            decimal? DecimalProperty { get; }
+
+            [Property("test.double.property")]
+            double? DoubleProperty { get; }
+
+            [Property("test.float.property")]
+            float? FloatProperty { get; }
         }
 
         [TestMethod]
@@ -47,6 +59,50 @@ namespace DotNet.MultiSourceConfiguration.Tests
             configurationServiceBuilder.RegisterConfigInterface<ITestInterface>(memorySource);
             ConfigurationService configService = configurationServiceBuilder.Build();
             int? result = configService.For<ITestInterface>().IntProperty;
+        }
+
+        [TestMethod]
+        public void LongValuesAreCorrectlyRetrieved()
+        {
+            var configurationServiceBuilder = new ConfigurationServiceBuilder();
+            var memorySource = new MemorySource();
+            memorySource.Add("test.long.property", "123123123123");
+            configurationServiceBuilder.RegisterConfigInterface<ITestInterface>(memorySource);
+            ConfigurationService configService = configurationServiceBuilder.Build();
+            Assert.AreEqual(123123123123L, configService.For<ITestInterface>().LongProperty);
+        }
+
+        [TestMethod]
+        public void DecimalValuesAreCorrectlyRetrieved()
+        {
+            var configurationServiceBuilder = new ConfigurationServiceBuilder();
+            var memorySource = new MemorySource();
+            memorySource.Add("test.decimal.property", "123123.123123");
+            configurationServiceBuilder.RegisterConfigInterface<ITestInterface>(memorySource);
+            ConfigurationService configService = configurationServiceBuilder.Build();
+            Assert.AreEqual(123123.123123m, configService.For<ITestInterface>().DecimalProperty);
+        }
+
+        [TestMethod]
+        public void DoubleValuesAreCorrectlyRetrieved()
+        {
+            var configurationServiceBuilder = new ConfigurationServiceBuilder();
+            var memorySource = new MemorySource();
+            memorySource.Add("test.double.property", "123123.123123");
+            configurationServiceBuilder.RegisterConfigInterface<ITestInterface>(memorySource);
+            ConfigurationService configService = configurationServiceBuilder.Build();
+            Assert.AreEqual(123123.123123d, configService.For<ITestInterface>().DoubleProperty);
+        }
+
+        [TestMethod]
+        public void FloatValuesAreCorrectlyRetrieved()
+        {
+            var configurationServiceBuilder = new ConfigurationServiceBuilder();
+            var memorySource = new MemorySource();
+            memorySource.Add("test.float.property", "123.123");
+            configurationServiceBuilder.RegisterConfigInterface<ITestInterface>(memorySource);
+            ConfigurationService configService = configurationServiceBuilder.Build();
+            Assert.AreEqual(123.123f, configService.For<ITestInterface>().FloatProperty);
         }
     }
 }
