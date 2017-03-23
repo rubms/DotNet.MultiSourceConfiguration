@@ -50,3 +50,6 @@ The available property sources are:
 * EnvironmentVariableSource: looks for the properties in the system environment variables.
 * CommandLineSource: tries to match the properties with arguments in the command line, with the format `--<property>=<value>`.
 * MemorySource: allows to define a series of properties in memory as use them as source of configuration.
+
+## Get DotNet.MultiSourceConfiguration
+DotNet.MultiSourceConfiguration is available in NuGet [![NuGet Version](https://img.shields.io/nuget/v/DotNet.MultiSourceConfiguration.svg?style=flat)](https://www.nuget.org/packages/DotNet.MultiSourceConfiguration)
