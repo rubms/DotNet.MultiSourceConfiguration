@@ -1,2 +1,8 @@
 language: csharp
 solution: DotNet.MultiSourceConfiguration.sln
+install:
+  - nuget restore DotNet.MultiSourceConfiguration.sln
+  - nuget install NUnit.Runners -Version 2.6.4 -OutputDirectory testrunner
+script:
+  - xbuild /p:Configuration=Release DotNet.MultiSourceConfiguration.sln
+  - mono ./testrunner/NUnit.Runners.2.6.4/tools/nunit-console.exe ./DotNet.MultiSourceConfiguration.Tests/bin/Release/DotNet.MultiSourceConfiguration.Tests.dll
