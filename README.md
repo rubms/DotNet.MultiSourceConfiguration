@@ -36,10 +36,10 @@ Configuration interfaces are populated via a configuration builder, which can be
     {
         static void Main(string[] args)
         {
-            var configurationServiceBuilder = new ConfigurationServiceBuilder();
-            configurationServiceBuilder.AddSources<AppConfiguration>(
+            var configurationBuilder = new ConfigurationBuilder();
+            configurationBuilder.AddSources<AppConfiguration>(
                 new AppSettingsSource(), new EnvironmentVariableSource(), new CommandLineSource(args));
-            ITestInterface configurationInterface = configurationServiceBuilder.Build<ITestInterface>();
+            ITestInterface configurationInterface = configurationBuilder.Build<ITestInterface>();
             ...
         }
     }
