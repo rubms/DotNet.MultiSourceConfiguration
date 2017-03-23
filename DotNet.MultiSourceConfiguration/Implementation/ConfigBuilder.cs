@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Threading;
 
-namespace DotNet.MultiSourceConfiguration.Implementation
+namespace MultiSourceConfiguration.Config.Implementation
 {
     class ConfigBuilder
     {

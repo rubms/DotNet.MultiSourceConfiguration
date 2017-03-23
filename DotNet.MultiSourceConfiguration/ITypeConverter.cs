@@ -1,4 +1,4 @@
-namespace DotNet.MultiSourceConfiguration
+namespace MultiSourceConfiguration.Config
 {
     public interface ITypeConverter<T>
     {

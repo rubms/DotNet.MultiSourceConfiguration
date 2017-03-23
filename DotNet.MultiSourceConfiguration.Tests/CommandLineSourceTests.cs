@@ -1,7 +1,7 @@
-﻿using DotNet.MultiSourceConfiguration.ConfigSource;
+﻿using MultiSourceConfiguration.Config.ConfigSource;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace DotNet.MultiSourceConfiguration.Tests
+namespace MultiSourceConfiguration.Config.Tests
 {
     [TestClass]
     public class CommandLineSourceTests

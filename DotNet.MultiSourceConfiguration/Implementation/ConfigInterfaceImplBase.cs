@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using DotNet.MultiSourceConfiguration.ConfigSource;
+using MultiSourceConfiguration.Config.ConfigSource;
 
-namespace DotNet.MultiSourceConfiguration.Implementation
+namespace MultiSourceConfiguration.Config.Implementation
 {
     public class ConfigInterfaceImplBase
     {

@@ -46,7 +46,6 @@
     <Compile Include="ConfigSource\EnvironmentVariableSource.cs" />
     <Compile Include="ConfigSource\AppSettingsSource.cs" />
     <Compile Include="ConfigSource\IStringConfigSource.cs" />
-    <Compile Include="ConfigurationService.cs" />
     <Compile Include="ConfigurationServiceBuilder.cs" />
     <Compile Include="PropertyAttribute.cs" />
     <Compile Include="Implementation\ConfigBuilder.cs" />

@@ -1,6 +1,6 @@
 using System;
 
-namespace DotNet.MultiSourceConfiguration.Implementation
+namespace MultiSourceConfiguration.Config.Implementation
 {
     class TypeConverterWrapper<T> : UnifiedConverter, ITypeConverter<T>
     {

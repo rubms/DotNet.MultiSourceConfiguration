@@ -1,8 +1,8 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using DotNet.MultiSourceConfiguration.ConfigSource;
+using MultiSourceConfiguration.Config.ConfigSource;
 
-namespace DotNet.MultiSourceConfiguration.Tests
+namespace MultiSourceConfiguration.Config.Tests
 {
     [TestClass]
     public class IntegrationTests
@@ -31,78 +31,78 @@ namespace DotNet.MultiSourceConfiguration.Tests
         [TestMethod]
         public void IntValuesAreCorrectlyRetrieved()
         {
-            var configurationServiceBuilder = new ConfigurationServiceBuilder();
+            var configurationBuilder = new ConfigurationBuilder();
             var memorySource = new MemorySource();
             memorySource.Add("test.int.property", "123");
-            configurationServiceBuilder.RegisterConfigInterface<ITestInterface>(memorySource);
-            ConfigurationService configService = configurationServiceBuilder.Build();
-            Assert.AreEqual(123, configService.For<ITestInterface>().IntProperty);
+            configurationBuilder.AddSources(memorySource);
+            ITestInterface testConfigInstance = configurationBuilder.Build<ITestInterface>();
+            Assert.AreEqual(123, testConfigInstance.IntProperty);
         }
 
         [TestMethod]
         public void StringValuesAreCorrectlyRetrieved()
         {
-            var configurationServiceBuilder = new ConfigurationServiceBuilder();
+            var configurationBuilder = new ConfigurationBuilder();
             var memorySource = new MemorySource();
             memorySource.Add("test.string.propery", "test");
-            configurationServiceBuilder.RegisterConfigInterface<ITestInterface>(memorySource);
-            ConfigurationService configService = configurationServiceBuilder.Build();
-            Assert.AreEqual("test", configService.For<ITestInterface>().StringProperty);
+            configurationBuilder.AddSources(memorySource);
+            ITestInterface testConfigInstance = configurationBuilder.Build<ITestInterface>();
+            Assert.AreEqual("test", testConfigInstance.StringProperty);
         }
 
         [TestMethod]
         [ExpectedException(typeof(InvalidOperationException))]
         public void NonExistingPropertiesThrowException()
         {
-            var configurationServiceBuilder = new ConfigurationServiceBuilder();
+            var configurationBuilder = new ConfigurationBuilder();
             var memorySource = new MemorySource();
-            configurationServiceBuilder.RegisterConfigInterface<ITestInterface>(memorySource);
-            ConfigurationService configService = configurationServiceBuilder.Build();
-            int? result = configService.For<ITestInterface>().IntProperty;
+            configurationBuilder.AddSources(memorySource);
+            ITestInterface testConfigInstance = configurationBuilder.Build<ITestInterface>();
+            int? result = testConfigInstance.IntProperty;
         }
 
         [TestMethod]
         public void LongValuesAreCorrectlyRetrieved()
         {
-            var configurationServiceBuilder = new ConfigurationServiceBuilder();
+            var configurationBuilder = new ConfigurationBuilder();
             var memorySource = new MemorySource();
             memorySource.Add("test.long.property", "123123123123");
-            configurationServiceBuilder.RegisterConfigInterface<ITestInterface>(memorySource);
-            ConfigurationService configService = configurationServiceBuilder.Build();
-            Assert.AreEqual(123123123123L, configService.For<ITestInterface>().LongProperty);
+            configurationBuilder.AddSources(memorySource);
+            ITestInterface testConfigInstance = configurationBuilder.Build<ITestInterface>();
+            Assert.AreEqual(123123123123L, testConfigInstance.LongProperty);
         }
 
         [TestMethod]
         public void DecimalValuesAreCorrectlyRetrieved()
         {
-            var configurationServiceBuilder = new ConfigurationServiceBuilder();
+            var configurationBuilder = new ConfigurationBuilder();
             var memorySource = new MemorySource();
             memorySource.Add("test.decimal.property", "123123.123123");
-            configurationServiceBuilder.RegisterConfigInterface<ITestInterface>(memorySource);
-            ConfigurationService configService = configurationServiceBuilder.Build();
-            Assert.AreEqual(123123.123123m, configService.For<ITestInterface>().DecimalProperty);
+            configurationBuilder.AddSources(memorySource);
+            ITestInterface testConfigInstance = configurationBuilder.Build<ITestInterface>();
+            Assert.AreEqual(123123.123123m, testConfigInstance.DecimalProperty);
         }
 
         [TestMethod]
         public void DoubleValuesAreCorrectlyRetrieved()
         {
-            var configurationServiceBuilder = new ConfigurationServiceBuilder();
+            var configurationBuilder = new ConfigurationBuilder();
             var memorySource = new MemorySource();
             memorySource.Add("test.double.property", "123123.123123");
-            configurationServiceBuilder.RegisterConfigInterface<ITestInterface>(memorySource);
-            ConfigurationService configService = configurationServiceBuilder.Build();
-            Assert.AreEqual(123123.123123d, configService.For<ITestInterface>().DoubleProperty);
+            configurationBuilder.AddSources(memorySource);
+            ITestInterface testConfigInstance = configurationBuilder.Build<ITestInterface>();
+            Assert.AreEqual(123123.123123d, testConfigInstance.DoubleProperty);
         }
 
         [TestMethod]
         public void FloatValuesAreCorrectlyRetrieved()
         {
-            var configurationServiceBuilder = new ConfigurationServiceBuilder();
+            var configurationBuilder = new ConfigurationBuilder();
             var memorySource = new MemorySource();
             memorySource.Add("test.float.property", "123.123");
-            configurationServiceBuilder.RegisterConfigInterface<ITestInterface>(memorySource);
-            ConfigurationService configService = configurationServiceBuilder.Build();
-            Assert.AreEqual(123.123f, configService.For<ITestInterface>().FloatProperty);
+            configurationBuilder.AddSources(memorySource);
+            ITestInterface testConfigInstance = configurationBuilder.Build<ITestInterface>();
+            Assert.AreEqual(123.123f, testConfigInstance.FloatProperty);
         }
     }
 }

@@ -1,6 +1,6 @@
 using System;
 
-namespace DotNet.MultiSourceConfiguration.Implementation
+namespace MultiSourceConfiguration.Config.Implementation
 {
     public abstract class UnifiedConverter
     {

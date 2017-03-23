@@ -1,6 +1,6 @@
 using System;
 
-namespace DotNet.MultiSourceConfiguration.Implementation
+namespace MultiSourceConfiguration.Config.Implementation
 {
     public class LambdaConverter<T> : ITypeConverter<T>
     {

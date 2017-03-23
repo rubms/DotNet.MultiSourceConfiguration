@@ -1,4 +1,4 @@
-namespace DotNet.MultiSourceConfiguration.ConfigSource
+namespace MultiSourceConfiguration.Config.ConfigSource
 {
     public interface IStringConfigSource
     {

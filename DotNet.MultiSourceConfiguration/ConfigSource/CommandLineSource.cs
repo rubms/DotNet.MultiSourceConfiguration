@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Text.RegularExpressions;
 
-namespace DotNet.MultiSourceConfiguration.ConfigSource
+namespace MultiSourceConfiguration.Config.ConfigSource
 {
     public class CommandLineSource : IStringConfigSource
     {

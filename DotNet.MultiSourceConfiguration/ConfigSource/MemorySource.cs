@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 
-namespace DotNet.MultiSourceConfiguration.ConfigSource
+namespace MultiSourceConfiguration.Config.ConfigSource
 {
     public class MemorySource : IStringConfigSource
     {

@@ -1,6 +1,6 @@
 using System;
 
-namespace DotNet.MultiSourceConfiguration
+namespace MultiSourceConfiguration.Config
 {
     [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
     public class PropertyAttribute : Attribute
