@@ -48,8 +48,6 @@
     <Compile Include="ConfigSource\IStringConfigSource.cs" />
     <Compile Include="ConfigurationServiceBuilder.cs" />
     <Compile Include="PropertyAttribute.cs" />
-    <Compile Include="Implementation\ConfigBuilder.cs" />
-    <Compile Include="Implementation\ConfigInterfaceImplBase.cs" />
     <Compile Include="Implementation\LambdaConverter.cs" />
     <Compile Include="Implementation\TypeConverterWrapper.cs" />
     <Compile Include="Implementation\UnifiedConverter.cs" />

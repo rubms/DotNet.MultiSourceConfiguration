@@ -17,7 +17,7 @@ namespace MultiSourceConfiguration.Config.Tests
 		}
 
 		[Test]
-		public void PropertiesMayContainValues()
+		public void PropertyValuesMayContainSpaces()
 		{
 			string[] args = new string[] { "--test.property=test string property with spaces", "" };
 			var commandLineSource = new CommandLineSource(args);

@@ -6,12 +6,11 @@ namespace MultiSourceConfiguration.Config
     public class PropertyAttribute : Attribute
     {
         private readonly string property;
-		private bool required;
 
         public PropertyAttribute(string property)
         {
             this.property = property;
-			required = false;
+			Required = false;
         }
 
         public string Property
@@ -19,10 +18,6 @@ namespace MultiSourceConfiguration.Config
             get { return property; }
         }
 
-		public bool Required { 
-			get { return required; }
-
-			set{ required = value; }
-		}
+		public bool Required { get; set; }
     }
 }
