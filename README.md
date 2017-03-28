@@ -12,48 +12,72 @@ The Microsoft.Extensions.Configuration project follow a very similar approach bu
 The approach followed by DotNet.MultiSourceConfiguration is the population of configuration interfaces, that can subsequently be registered on an IOC container or made avaialable as a static property. The properties of the interface must be decorated with the `Property` attribute, indicating the name of the property that must be mapped to the property:
 
 ```C#
-    public interface ITestInterface
+    public class TestConfigurationDto
     {
+        // By default properties are required
         [Property("test.int.property")]
-        int? IntProperty { get; }
+        public int? IntProperty { get; set; }
 
-        [Property("test.string.propery")]
-        string StringProperty { get; }
+        // The required condition of a property can be explicitly included
+        [Property("test.string.property", Required = true)]
+        public string StringProperty { get; set; }
 
-        [Property("test.long.property")]
-        long? LongProperty { get; }
-
-        [Property("test.decimal.property")]
-        decimal? DecimalProperty { get; }
-
-        [Property("test.double.property")]
-        double? DoubleProperty { get; }
-
-        [Property("test.float.property")]
-        float? FloatProperty { get; }
+        // Properties can be marked as not required. The default value of the
+        // given type converter will be applied (typically, null).
+        [Property("test.long.property", Required = false)]
+        public long? LongProperty { get; set; }
     }
 ```
 
-Configuration interfaces are populated via a configuration builder, which can be specified a series of sources:
+Configuration classes are populated via a configuration builder, which can be specified a series of sources:
 ```C#
     class Program
     {
         static void Main(string[] args)
         {
             var configurationBuilder = new ConfigurationBuilder();
-            configurationBuilder.AddSources<AppConfiguration>(
+            configurationBuilder.AddSources(
                 new AppSettingsSource(), new EnvironmentVariableSource(), new CommandLineSource(args));
-            ITestInterface configurationInterface = configurationBuilder.Build<ITestInterface>();
+            TestConfigurationDto configurationInterface = configurationBuilder.Build<TestConfigurationDto>();
             ...
         }
     }
 ```
+
+### Property Sources
 
 The available property sources are:
 * AppSettingsSource: looks for the properties in the .NET application settings file.
 * EnvironmentVariableSource: looks for the properties in the system environment variables.
 * CommandLineSource: tries to match the properties with arguments in the command line, with the format `--<property>=<value>`.
 * MemorySource: allows to define a series of properties in memory as use them as source of configuration.
+
+In addition to these property sources you can implement your own by providing implementations of the `IStringConfigSource` interface:
+```C#
+    public interface IStringConfigSource
+    {
+        bool TryGetString(string property, out string value);
+    }
+```
+
+The configuration properties are overwritten by the given property sources in the order they are specified in the `AddSources` call. In the example above, the properties will be first read in the application settings file. Subsequently they will be overwritten with the properties found in environment variables (in case they are found). Finally, the properties will be overwritten with the values found in command-line arguments.
+
+This provides a very convenient deployment behavior (specially for applications running in containers), in which applications take some default configuration from application settings, that is overwritten by the environment variables set in the machine (or container) and are finally overwritten with whatever has been provided in command line arguments.
+
+### Property Types
+
+The following types for configuration properties are available:
+* string, string[]
+* int?, int[]
+* long?, long[]
+* decimal?, decimal[]
+* float?, float[]
+* double?, double[]
+
+In addition to these types, you can add your own type converters by providing implementations of the `ITypeConverter` interface to the `AddTypeConverter<T>()` method of `ConfigurationBuilder`. For convenience, the `LambdaConverter` is provided, that makes it easier to implement your own type converter:
+```C#
+    configurationBuilder.AddTypeConverter(new LambdaConverter<MyType>(null /* Default value */, s => MyType.Parse(s) /* Converter lambda */));
+```
 
 ## Get DotNet.MultiSourceConfiguration
 DotNet.MultiSourceConfiguration is available in NuGet [![NuGet Version](https://img.shields.io/nuget/v/DotNet.MultiSourceConfiguration.svg?style=flat)](https://www.nuget.org/packages/DotNet.MultiSourceConfiguration)

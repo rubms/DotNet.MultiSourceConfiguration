@@ -2,7 +2,7 @@
 <package >
 	<metadata>
 		<id>DotNet.MultiSourceConfiguration</id>
-		<version>0.2.1</version>
+		<version>0.3.0</version>
 		<title>DotNet.MultiSourceConfiguration</title>
 		<authors>Rubén Martínez</authors>
 		<owners>Rubén Martínez</owners>
@@ -10,7 +10,7 @@
 		<projectUrl>https://github.com/rubms/DotNet.MultiSourceConfiguration</projectUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>Library for reading configuration from multiple sources in .NET. Current sources are in memory properties, app settings file, environment variables and command line arguments. It is also possible to implement your own configuration sources (like database, consul, etcd, etc.)</description>
-		<releaseNotes>Minor renaming of builder, now a builder of configuration and not a service builder anymore.</releaseNotes>
+		<releaseNotes> Added new required property in the configuration properties attribute, that allows to specify that a configuration property is not required, so no exception will be thrown in case the configuration property is not set. Simplified the reading of properties. Now, instead of building an implementation of the configuration DTO dynamically using IL, a configuration class is used and populated.</releaseNotes>
 		<copyright>Copyright 2017</copyright>
 		<tags>Configuration Source Multisource Environment Variables Command Line</tags>
 	</metadata>
