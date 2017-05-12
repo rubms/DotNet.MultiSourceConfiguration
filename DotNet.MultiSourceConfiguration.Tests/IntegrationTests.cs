@@ -26,6 +26,9 @@ namespace MultiSourceConfiguration.Config.Tests
 
             [Property("test.float.property", Required = false)]
             public float? FloatProperty { get; set; }
+
+            [Property("test.bool.property", Required = false)]
+            public bool? BoolProperty { get; set; }
         }
 
         public class TestConfigurationDtoWithRequiredField
@@ -107,6 +110,28 @@ namespace MultiSourceConfiguration.Config.Tests
             configurationBuilder.AddSources(memorySource);
             TestConfigurationDto testConfigInstance = configurationBuilder.Build<TestConfigurationDto>();
             Assert.AreEqual(123.123f, testConfigInstance.FloatProperty);
+        }
+
+        [Test]
+        public void TrueBoolValuesAreCorrectlyRetrieved()
+        {
+            var configurationBuilder = new ConfigurationBuilder();
+            var memorySource = new MemorySource();
+            memorySource.Add("test.bool.property", "true");
+            configurationBuilder.AddSources(memorySource);
+            TestConfigurationDto testConfigInstance = configurationBuilder.Build<TestConfigurationDto>();
+            Assert.AreEqual(true, testConfigInstance.BoolProperty);
+        }
+
+        [Test]
+        public void FalseBoolValuesAreCorrectlyRetrieved()
+        {
+            var configurationBuilder = new ConfigurationBuilder();
+            var memorySource = new MemorySource();
+            memorySource.Add("test.bool.property", "false");
+            configurationBuilder.AddSources(memorySource);
+            TestConfigurationDto testConfigInstance = configurationBuilder.Build<TestConfigurationDto>();
+            Assert.AreEqual(false, testConfigInstance.BoolProperty);
         }
 
         [Test]

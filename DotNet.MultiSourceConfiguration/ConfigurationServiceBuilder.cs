@@ -15,6 +15,8 @@ namespace MultiSourceConfiguration.Config
         {
             stringConfigSources = new List<IStringConfigSource>();
 
+            AddTypeConverter(new LambdaConverter<bool?>(null, s => Boolean.Parse(s)));
+            AddTypeConverter(new LambdaConverter<bool[]>(new bool[0], s => s.Split(',').Select(Boolean.Parse).ToArray()));
             AddTypeConverter(new LambdaConverter<int?>(null, s => Int32.Parse(s)));
             AddTypeConverter(new LambdaConverter<int[]>(new int[0], s => s.Split(',').Select(Int32.Parse).ToArray()));
             AddTypeConverter(new LambdaConverter<string>(null, s => s));
