@@ -67,6 +67,7 @@ This provides a very convenient deployment behavior (specially for applications 
 ### Property Types
 
 The following types for configuration properties are available:
+* bool?, bool?[]
 * string, string[]
 * int?, int[]
 * long?, long[]
