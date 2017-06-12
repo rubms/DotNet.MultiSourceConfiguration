@@ -1,6 +1,7 @@
 ﻿using System;
 using MultiSourceConfiguration.Config.ConfigSource;
 using NUnit.Framework;
+using System.Threading;
 
 namespace MultiSourceConfiguration.Config.Tests
 {
@@ -147,6 +148,44 @@ namespace MultiSourceConfiguration.Config.Tests
             TestConfigurationDto testConfigInstance = configurationBuilder.Build<TestConfigurationDto>();
 
             Assert.AreEqual("source2", testConfigInstance.StringProperty);
+        }
+
+        [Test]
+        public void CacheDisabledByDefault()
+        {
+            var configurationBuilder = new ConfigurationBuilder();
+            var memorySource = new MemorySource();
+            configurationBuilder.AddSources(memorySource);
+
+            memorySource.Add("test.string.property", "test");
+            TestConfigurationDto testConfigInstance = configurationBuilder.Build<TestConfigurationDto>();
+            Assert.AreEqual("test", testConfigInstance.StringProperty);
+
+            memorySource.Add("test.string.property", "test2");
+            testConfigInstance = configurationBuilder.Build<TestConfigurationDto>();
+            Assert.AreEqual("test2", testConfigInstance.StringProperty);
+        }
+
+        [Test]
+        public void CacheAcceptsTheConfiguredExpiration()
+        {
+            var configurationBuilder = new ConfigurationBuilder();
+            var memorySource = new MemorySource();
+            configurationBuilder.AddSources(memorySource);
+            configurationBuilder.CacheExpiration = TimeSpan.FromSeconds(1);
+
+            memorySource.Add("test.string.property", "test");
+            TestConfigurationDto testConfigInstance = configurationBuilder.Build<TestConfigurationDto>();
+            Assert.AreEqual("test", testConfigInstance.StringProperty);
+
+            memorySource.Add("test.string.property", "test2");
+            Thread.Sleep(500);
+            testConfigInstance = configurationBuilder.Build<TestConfigurationDto>();
+            Assert.AreEqual("test", testConfigInstance.StringProperty);
+
+            Thread.Sleep(1500);
+            testConfigInstance = configurationBuilder.Build<TestConfigurationDto>();
+            Assert.AreEqual("test2", testConfigInstance.StringProperty);
         }
     }
 }

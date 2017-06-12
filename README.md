@@ -9,7 +9,7 @@ The Microsoft.Extensions.Configuration project follow a very similar approach bu
 * At the moment of writing DotNet.MultiSourceConfiguration, the existing documentation was outdated and did not work with the last version of the library.
 
 ## How to use it
-The approach followed by DotNet.MultiSourceConfiguration is the population of configuration interfaces, that can subsequently be registered on an IOC container or made avaialable as a static property. The properties of the interface must be decorated with the `Property` attribute, indicating the name of the property that must be mapped to the property:
+The approach followed by DotNet.MultiSourceConfiguration is the population of configuration classes, that can subsequently be registered on an IOC container or made avaialable as a static property. The properties of the configuration class must be decorated with the `Property` attribute, indicating the name of the property that must be mapped to the property:
 
 ```C#
     public class TestConfigurationDto
@@ -43,6 +43,15 @@ Configuration classes are populated via a configuration builder, which can be sp
         }
     }
 ```
+
+The configuration builder has caching capabilities, allowing to re-use built configuration classes until a configurable cache expiration times out. When the cache expires and a configuration class is re-built, then the configuration is re-read from the sources. The cache expiration is configurable via the `CacheExpiration` property (by default the cache expiration is 0, i.e. no caching is done):
+```C#
+	var configurationBuilder = new ConfigurationBuilder();
+	configurationBuilder.AddSources(
+		new AppSettingsSource(), new EnvironmentVariableSource(), new CommandLineSource(args));
+	configurationBuilder.CacheExpiration = TimeSpan.FromMinutes(2);
+```
+
 
 ### Property Sources
 

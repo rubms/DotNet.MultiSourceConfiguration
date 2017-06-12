@@ -14,7 +14,7 @@ namespace MultiSourceConfiguration.Config.ConfigSource
 
         public void Add(string property, string value)
         {
-            properties.Add(property, value);
+            properties[property] = value;
         }
 
         public bool TryGetString(string property, out string value)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MultiSourceConfiguration.Config.ConfigSource;
 using MultiSourceConfiguration.Config.Implementation;
+using System.Runtime.Caching;
 
 namespace MultiSourceConfiguration.Config
 {
@@ -10,6 +11,9 @@ namespace MultiSourceConfiguration.Config
     {
         private readonly Dictionary<Type, UnifiedConverter> converters = new Dictionary<Type, UnifiedConverter>();
         private List<IStringConfigSource> stringConfigSources;
+        private MemoryCache memoryCache;
+
+        public TimeSpan CacheExpiration { get; set; }
 
         public ConfigurationBuilder()
         {
@@ -29,6 +33,10 @@ namespace MultiSourceConfiguration.Config
             AddTypeConverter(new LambdaConverter<decimal[]>(new decimal[0], s => s.Split(',').Select(decimal.Parse).ToArray()));
             AddTypeConverter(new LambdaConverter<float?>(null, s => float.Parse(s)));
             AddTypeConverter(new LambdaConverter<float[]>(new float[0], s => s.Split(',').Select(float.Parse).ToArray()));
+
+            memoryCache = new MemoryCache("MultiSourceConfiguration");
+
+            CacheExpiration = TimeSpan.FromSeconds(0);
         }
 
         public void AddTypeConverter<T>(ITypeConverter<T> converter)
@@ -43,7 +51,11 @@ namespace MultiSourceConfiguration.Config
 
         public T Build<T>() where T : class, new()
         {
-            var result = new T();
+            T result = memoryCache.Get(typeof(T).FullName) as T;
+            if (result != null)
+                return result;
+
+            result = new T();
             var dtoProperties = typeof(T).GetProperties();
             foreach (var dtoProperty in dtoProperties)
             {
@@ -53,6 +65,8 @@ namespace MultiSourceConfiguration.Config
                     dtoProperty.SetValue(result, GetValue(propertyAttribute.Property, dtoProperty.PropertyType, propertyAttribute.Required));
                 }
             }
+
+            memoryCache.Add(typeof(T).FullName, result, DateTimeOffset.Now.Add(CacheExpiration));
 
             return result;
         }
