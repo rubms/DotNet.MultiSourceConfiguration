@@ -35,7 +35,7 @@ Configuration classes are populated via a configuration builder, which can be sp
     {
         static void Main(string[] args)
         {
-            var configurationBuilder = new ConfigurationBuilder();
+            IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
             configurationBuilder.AddSources(
                 new AppSettingsSource(), new EnvironmentVariableSource(), new CommandLineSource(args));
             TestConfigurationDto configurationInterface = configurationBuilder.Build<TestConfigurationDto>();
@@ -44,9 +44,11 @@ Configuration classes are populated via a configuration builder, which can be sp
     }
 ```
 
+The configuration builder implements the IConfigurationBuilder interface. This way, the configuration builder is easier to mock in unit tests of classes that depend on it. A common pattern is to register the configuration builder in an IoC container and inject it in classes that need it.
+
 The configuration builder has caching capabilities, allowing to re-use built configuration classes until a configurable cache expiration times out. When the cache expires and a configuration class is re-built, then the configuration is re-read from the sources. The cache expiration is configurable via the `CacheExpiration` property (by default the cache expiration is 0, i.e. no caching is done):
 ```C#
-	var configurationBuilder = new ConfigurationBuilder();
+	IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
 	configurationBuilder.AddSources(
 		new AppSettingsSource(), new EnvironmentVariableSource(), new CommandLineSource(args));
 	configurationBuilder.CacheExpiration = TimeSpan.FromMinutes(2);

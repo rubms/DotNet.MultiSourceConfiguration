@@ -7,7 +7,7 @@ using System.Runtime.Caching;
 
 namespace MultiSourceConfiguration.Config
 {
-    public class ConfigurationBuilder
+    public class ConfigurationBuilder : IConfigurationBuilder
     {
         private readonly Dictionary<Type, UnifiedConverter> converters = new Dictionary<Type, UnifiedConverter>();
         private List<IStringConfigSource> stringConfigSources;

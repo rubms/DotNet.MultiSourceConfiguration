@@ -48,6 +48,7 @@
     <Compile Include="ConfigSource\AppSettingsSource.cs" />
     <Compile Include="ConfigSource\IStringConfigSource.cs" />
     <Compile Include="ConfigurationBuilder.cs" />
+    <Compile Include="IConfigurationBuilder.cs" />
     <Compile Include="PropertyAttribute.cs" />
     <Compile Include="Implementation\LambdaConverter.cs" />
     <Compile Include="Implementation\TypeConverterWrapper.cs" />
