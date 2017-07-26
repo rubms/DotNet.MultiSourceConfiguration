@@ -14,7 +14,7 @@ The approach followed by DotNet.MultiSourceConfiguration is the population of co
 ```C#
     public class TestConfigurationDto
     {
-        // By default properties are required
+        // By default properties are not required
         [Property("test.int.property")]
         public int? IntProperty { get; set; }
 
@@ -26,7 +26,12 @@ The approach followed by DotNet.MultiSourceConfiguration is the population of co
         // given type converter will be applied (typically, null).
         [Property("test.long.property", Required = false)]
         public long? LongProperty { get; set; }
-    }
+
+        // The "Default" property can be used to provide a default value in 
+		// it is not provided via configuration.
+        [Property("test.bool.property", Default = "true")]
+        public bool? BoolProperty { get; set; }
+	}
 ```
 
 Configuration classes are populated via a configuration builder, which can be specified a series of sources:

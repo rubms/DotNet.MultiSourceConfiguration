@@ -38,6 +38,12 @@ namespace MultiSourceConfiguration.Config.Tests
             public string StringProperty { get; set; }
         }
 
+        public class TestConfigurationDtoWithDefaultValue
+        {
+            [Property("test.string.property", Default = "testValue")]
+            public string StringProperty { get; set; }
+        }
+
         [Test]
         public void IntValuesAreCorrectlyRetrieved()
         {
@@ -186,6 +192,17 @@ namespace MultiSourceConfiguration.Config.Tests
             Thread.Sleep(1500);
             testConfigInstance = configurationBuilder.Build<TestConfigurationDto>();
             Assert.AreEqual("test2", testConfigInstance.StringProperty);
+        }
+
+        [Test]
+        public void DefaultValuesAreCorrectlyRead()
+        {
+            var configurationBuilder = new ConfigurationBuilder();
+            var memorySource = new MemorySource();
+            configurationBuilder.AddSources(memorySource);
+
+            TestConfigurationDtoWithDefaultValue testConfigInstance = configurationBuilder.Build<TestConfigurationDtoWithDefaultValue>();
+            Assert.AreEqual("testValue", testConfigInstance.StringProperty);
         }
     }
 }

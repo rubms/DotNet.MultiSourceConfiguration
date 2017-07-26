@@ -19,5 +19,7 @@ namespace MultiSourceConfiguration.Config
         }
 
 		public bool Required { get; set; }
+
+        public string Default { get; set; }
     }
 }

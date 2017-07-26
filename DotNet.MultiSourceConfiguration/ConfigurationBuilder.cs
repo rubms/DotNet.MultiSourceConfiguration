@@ -62,7 +62,7 @@ namespace MultiSourceConfiguration.Config
                 if (dtoProperty.IsDefined(typeof(PropertyAttribute), false))
                 {
                     var propertyAttribute = dtoProperty.GetCustomAttributes(typeof(PropertyAttribute), false).FirstOrDefault() as PropertyAttribute;
-                    dtoProperty.SetValue(result, GetValue(propertyAttribute.Property, dtoProperty.PropertyType, propertyAttribute.Required));
+                    dtoProperty.SetValue(result, GetValue(propertyAttribute.Property, dtoProperty.PropertyType, propertyAttribute.Required, propertyAttribute.Default));
                 }
             }
 
@@ -87,15 +87,24 @@ namespace MultiSourceConfiguration.Config
             return found;
         }
 
-        private object GetValue(string fieldName, Type type, bool required)
+        private object GetValue(string fieldName, Type type, bool required, string defaultValue)
         {
             UnifiedConverter converter;
             string value;
 
             if (!converters.TryGetValue(type, out converter))
                 throw new InvalidOperationException(string.Format("Unsupported type {0} for field {1}", type.Name, fieldName));
-            if (!GetStringValue(fieldName, out value) && required)
-                throw new InvalidOperationException(string.Format("No value found for field {0}", fieldName));
+            if (!GetStringValue(fieldName, out value)) {
+                if (defaultValue != null)
+                {
+                    value = defaultValue;
+                }
+                else if (required)
+                {
+                    throw new InvalidOperationException(string.Format("No value found for field {0}", fieldName));
+                }
+            }
+                
             try
             {
                 return value == null ? converter.GetDefaultValue() : converter.FromString(value);
