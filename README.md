@@ -28,7 +28,7 @@ The approach followed by DotNet.MultiSourceConfiguration is the population of co
         public long? LongProperty { get; set; }
 
         // The "Default" property can be used to provide a default value in 
-		// it is not provided via configuration.
+	// case it is not provided via configuration.
         [Property("test.bool.property", Default = "true")]
         public bool? BoolProperty { get; set; }
 	}
