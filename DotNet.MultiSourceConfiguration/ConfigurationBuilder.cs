@@ -4,6 +4,7 @@ using System.Linq;
 using MultiSourceConfiguration.Config.ConfigSource;
 using MultiSourceConfiguration.Config.Implementation;
 using System.Runtime.Caching;
+using System.Globalization;
 
 namespace MultiSourceConfiguration.Config
 {
@@ -21,18 +22,18 @@ namespace MultiSourceConfiguration.Config
 
             AddTypeConverter(new LambdaConverter<bool?>(null, s => Boolean.Parse(s)));
             AddTypeConverter(new LambdaConverter<bool[]>(new bool[0], s => s.Split(',').Select(Boolean.Parse).ToArray()));
-            AddTypeConverter(new LambdaConverter<int?>(null, s => Int32.Parse(s)));
-            AddTypeConverter(new LambdaConverter<int[]>(new int[0], s => s.Split(',').Select(Int32.Parse).ToArray()));
+            AddTypeConverter(new LambdaConverter<int?>(null, s => Int32.Parse(s, CultureInfo.InvariantCulture)));
+            AddTypeConverter(new LambdaConverter<int[]>(new int[0], s => s.Split(',').Select(x => Int32.Parse(x, CultureInfo.InvariantCulture)).ToArray()));
             AddTypeConverter(new LambdaConverter<string>(null, s => s));
             AddTypeConverter(new LambdaConverter<string[]>(new string[0], s => s.Split(',')));
-            AddTypeConverter(new LambdaConverter<long?>(null, s => Int64.Parse(s)));
-            AddTypeConverter(new LambdaConverter<long[]>(new long[0], s => s.Split(',').Select(Int64.Parse).ToArray()));
-            AddTypeConverter(new LambdaConverter<double?>(null, s => double.Parse(s)));
-            AddTypeConverter(new LambdaConverter<double[]>(new double[0], s => s.Split(',').Select(double.Parse).ToArray()));
-            AddTypeConverter(new LambdaConverter<decimal?>(null, s => decimal.Parse(s)));
-            AddTypeConverter(new LambdaConverter<decimal[]>(new decimal[0], s => s.Split(',').Select(decimal.Parse).ToArray()));
-            AddTypeConverter(new LambdaConverter<float?>(null, s => float.Parse(s)));
-            AddTypeConverter(new LambdaConverter<float[]>(new float[0], s => s.Split(',').Select(float.Parse).ToArray()));
+            AddTypeConverter(new LambdaConverter<long?>(null, s => Int64.Parse(s, CultureInfo.InvariantCulture)));
+            AddTypeConverter(new LambdaConverter<long[]>(new long[0], s => s.Split(',').Select(x => Int64.Parse(x, CultureInfo.InvariantCulture)).ToArray()));
+            AddTypeConverter(new LambdaConverter<double?>(null, s => double.Parse(s, CultureInfo.InvariantCulture)));
+            AddTypeConverter(new LambdaConverter<double[]>(new double[0], s => s.Split(',').Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToArray()));
+            AddTypeConverter(new LambdaConverter<decimal?>(null, s => decimal.Parse(s, CultureInfo.InvariantCulture)));
+            AddTypeConverter(new LambdaConverter<decimal[]>(new decimal[0], s => s.Split(',').Select(x => decimal.Parse(x, CultureInfo.InvariantCulture)).ToArray()));
+            AddTypeConverter(new LambdaConverter<float?>(null, s => float.Parse(s, CultureInfo.InvariantCulture)));
+            AddTypeConverter(new LambdaConverter<float[]>(new float[0], s => s.Split(',').Select(x => float.Parse(x, CultureInfo.InvariantCulture)).ToArray()));
 
             memoryCache = new MemoryCache("MultiSourceConfiguration");
 
