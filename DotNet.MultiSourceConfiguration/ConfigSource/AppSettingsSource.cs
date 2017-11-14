@@ -5,6 +5,8 @@ namespace MultiSourceConfiguration.Config.ConfigSource
 {
     public class AppSettingsSource : IStringConfigSource
     {
+        public TimeSpan CacheExpiration { private get;  set; }
+
         public bool TryGetString(string property, out string value)
         {
             value = null;

@@ -12,6 +12,8 @@ namespace MultiSourceConfiguration.Config.ConfigSource
             properties = new Dictionary<string, string>();
         }
 
+        public TimeSpan CacheExpiration { private get; set; }
+
         public void Add(string property, string value)
         {
             properties[property] = value;

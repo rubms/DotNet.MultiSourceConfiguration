@@ -13,6 +13,8 @@ namespace MultiSourceConfiguration.Config.ConfigSource
             parsedProperties = parseProperties(args);
         }
 
+        public TimeSpan CacheExpiration { private get; set; }
+
         public bool TryGetString(string property, out string value)
         {
             value = null;

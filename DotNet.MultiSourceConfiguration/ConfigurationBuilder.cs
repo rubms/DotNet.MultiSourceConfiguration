@@ -13,8 +13,7 @@ namespace MultiSourceConfiguration.Config
         private readonly Dictionary<Type, UnifiedConverter> converters = new Dictionary<Type, UnifiedConverter>();
         private List<IStringConfigSource> stringConfigSources;
         private MemoryCache memoryCache;
-
-        public TimeSpan CacheExpiration { get; set; }
+        private TimeSpan _cacheExpiration;
 
         public ConfigurationBuilder()
         {
@@ -37,7 +36,20 @@ namespace MultiSourceConfiguration.Config
 
             memoryCache = new MemoryCache("MultiSourceConfiguration");
 
-            CacheExpiration = TimeSpan.FromSeconds(0);
+            _cacheExpiration = TimeSpan.FromSeconds(0);
+        }
+
+        public TimeSpan CacheExpiration {
+            get
+            {
+                return _cacheExpiration;
+            }
+
+            set
+            {
+                _cacheExpiration = value;
+                stringConfigSources.ForEach(configSource => configSource.CacheExpiration = value);
+            }
         }
 
         public void AddTypeConverter<T>(ITypeConverter<T> converter)
@@ -47,6 +59,8 @@ namespace MultiSourceConfiguration.Config
 
         public void AddSources(params IStringConfigSource[] stringConfigSources)
         {
+            foreach (var stringConfigSource in stringConfigSources)
+                stringConfigSource.CacheExpiration = _cacheExpiration;
             this.stringConfigSources.AddRange(stringConfigSources);
         }
 

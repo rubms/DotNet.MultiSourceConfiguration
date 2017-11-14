@@ -1,5 +1,8 @@
 # DotNet.MultiSourceConfiguration
-Configuration library with multiple sources for .NET. [![Build Status](https://travis-ci.org/rubms/DotNet.MultiSourceConfiguration.svg?branch=master)](https://travis-ci.org/rubms/DotNet.MultiSourceConfiguration)
+[![NuGet Version](https://img.shields.io/nuget/v/DotNet.MultiSourceConfiguration.svg?style=flat)](https://www.nuget.org/packages/DotNet.MultiSourceConfiguration)
+[![Build Status](https://travis-ci.org/rubms/DotNet.MultiSourceConfiguration.svg?branch=master)](https://travis-ci.org/rubms/DotNet.MultiSourceConfiguration)
+
+Configuration library with multiple sources for .NET. 
 
 ## Why DotNet.MultiSourceConfiguration
 A very typical scenario in microservices (which typically run in containers) is to configure a service via a configuration file, and overwrite that configuration with whatever you can find in environment variables and command line. Used to [Spring Boot's approach](http://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-external-config.html) to configuration based in properties and property sources, I have struggled to find a simple library in .NET allowing to read configuration from different sources and overwrite it in a specified source order.
@@ -96,5 +99,3 @@ In addition to these types, you can add your own type converters by providing im
     configurationBuilder.AddTypeConverter(new LambdaConverter<MyType>(null /* Default value */, s => MyType.Parse(s) /* Converter lambda */));
 ```
 
-## Get DotNet.MultiSourceConfiguration
-DotNet.MultiSourceConfiguration is available in NuGet [![NuGet Version](https://img.shields.io/nuget/v/DotNet.MultiSourceConfiguration.svg?style=flat)](https://www.nuget.org/packages/DotNet.MultiSourceConfiguration)
