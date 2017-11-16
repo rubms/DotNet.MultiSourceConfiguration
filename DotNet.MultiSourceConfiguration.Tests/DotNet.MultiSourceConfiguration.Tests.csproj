@@ -46,7 +46,6 @@
   <ItemGroup>
     <Compile Include="ConfigurationBuilderTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="IntegrationTests.cs" />
     <Compile Include="CommandLineSourceTests.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

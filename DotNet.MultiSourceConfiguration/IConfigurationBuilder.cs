@@ -38,5 +38,13 @@ namespace MultiSourceConfiguration.Config
         /// <typeparam name="T">Type of the configuration object to instance and populate.</typeparam>
         /// <returns>New instance of T, populated with the values read form configuration.</returns>
         T Build<T>() where T : class, new();
+
+        /// <summary>
+        /// Tries to get the string value of the specified property name.
+        /// </summary>
+        /// <param name="propertyName">Name of the property that has to be retrieved.</param>
+        /// <param name="propertyValue">Retrieved value of the property.</param>
+        /// <returns>True when the property was successfully retrieved. False otherwise.</returns>
+        bool TryGetStringValue(string propertyName, out string propertyValue);
     }
 }
