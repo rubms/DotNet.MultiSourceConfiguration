@@ -47,7 +47,7 @@ Configuration classes are populated via a configuration builder, which can be sp
             IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
             configurationBuilder.AddSources(
                 new AppSettingsSource(), new EnvironmentVariableSource(), new CommandLineSource(args));
-            TestConfigurationDto configurationInterface = configurationBuilder.Build<TestConfigurationDto>();
+            TestConfigurationDto configurationDto = configurationBuilder.Build<TestConfigurationDto>();
             ...
         }
     }
@@ -70,17 +70,105 @@ Properties in configuration objects that you want to populate with DotNet.MultiS
 ```C#
     public class TestConfigurationDto
     {
-        // By default properties are not required
-        [Property("test.int.property")]
-        public int? IntProperty { get; set; }
+    	[Property("test.int.property")]
+        public int IntProperty { get; set; }
+    }
+    
+    [Test]
+    public void Test()
+    {
+	    var memoryConfigurationSource = new MemorySource();
+    	memoryConfigurationSource.Add("test.int.property", "123");
+
+		IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
+		configurationBuilder.AddSources(memoryConfigurationSource);
+
+		TestConfigurationDto configurationDto = configurationBuilder.Build<TestConfigurationDto>();
+        
+        Assert.AreEqual(123, configurationDto.IntProperty);
 	}
+    
 ```
-Properties in the configuration object that are not decorated with the `Property` annotation will not be populated by DotNet.MultiSourceConfiguration.
 
 The `Property` annotation accepts the following attributes:
 
 * _Required (bool)_: When set to true, the corresponding configuration property will be mandatory. An `InvalidOperationException` will be thrown if it is not possible to read the property value from at least one configuration source. Configuration properties are not required by default.
 * _Default (string)_: A default value to set to the configuration property in case the it was not possible to read the property value from any configuration source.
+
+Properties in the configuration object that are not decorated with the `Property` annotation will not be populated by default. 
+
+```C#
+    public class TestConfigurationDto
+    {
+        // By default only properties decorated with the Property annotation are populated
+        [Property("test.int.property")]
+        public int? IntProperty { get; set; }
+        
+        // This property will be ignored, unless HandleNonDecoratedProperties is set to true
+        public int? IgnoredProperty { get; set; }
+    }
+```
+
+In case you want DotNet.MultiSourceConfiguration to also populate non-decorated configuration object properties you may set the `HandleNonDecoratedProperties` property of `IConfigurationBuilder` to `true`:
+```C#
+configurationBuilder.HandleNonDecoratedProperties = true;
+```
+In this case, the name of the configuration object property itself will be used as property name when retrieving the configuration from the configuration sources. 
+```C#
+    public class TestConfigurationDto
+    {
+        public int NonDecoratedProperty { get; set; }
+    }
+    
+    [Test]
+    public void Test()
+    {
+	    var memoryConfigurationSource = new MemorySource();
+    	memoryConfigurationSource.Add("NonDecoratedProperty", "123");
+
+		IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
+		configurationBuilder.AddSources(memoryConfigurationSource);
+		configurationBuilder.HandleNonDecoratedProperties = true;
+
+		TestConfigurationDto configurationDto = configurationBuilder.Build<TestConfigurationDto>();
+        
+        Assert.AreEqual(123, configurationDto.NonDecoratedProperty);
+	}
+    
+```
+This behavior is useful when you are introducing DotNet.MultiSourceConfiguration in an already existing application that has a big number of configuration objects.
+
+
+#### Property Prefixes
+
+It is possible to indicate a prefix when building a configuration object in the `IConfigurationBuilder.Build<T>(string propertiesPrefix)` function. This will add the specified prefix to each one of the property names when trying to find the property value in the different configuration sources: 
+```C#
+    public class TestConfigurationDto
+    {
+    	[Property("testProperty")]
+        public int IntProperty { get; set; }
+    }
+    
+    [Test]
+    public void Test()
+    {
+	    var memoryConfigurationSource = new MemorySource();
+    	memoryConfigurationSource.Add("myComponent1.testProperty", "1");
+    	memoryConfigurationSource.Add("myComponent2.testProperty", "2");
+
+		IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
+		configurationBuilder.AddSources(memoryConfigurationSource);
+
+		TestConfigurationDto configurationDto1 = configurationBuilder.Build<TestConfigurationDto>(propertiesPrefix: "myComponent1.");
+		TestConfigurationDto configurationDto2 = configurationBuilder.Build<TestConfigurationDto>(propertiesPrefix: "myComponent2.");
+        
+        Assert.AreEqual(1, configurationDto1.IntProperty);
+        Assert.AreEqual(2, configurationDto2.IntProperty);
+	}
+    
+```
+
+This is useful when you want to reuse the same configuration object in different contexts, each one having a different prefix.
 
 ### Property Sources
 
@@ -110,13 +198,13 @@ It is also possible to perform several calls to `AddSources`. The given configur
 ### Property Types
 
 The following types for configuration properties are available:
-* bool, bool?, bool?[]
-* string, string[]
-* int, int?, int[]
-* long, long?, long[]
-* decimal, decimal?, decimal[]
-* float, float?, float[]
-* double, double?, double[]
+* bool, bool?, bool[], List<bool>
+* string, string[], List<string>
+* int, int?, int[], List<int>
+* long, long?, long[], List<long>
+* decimal, decimal?, decimal[], List<decimal>
+* float, float?, float[], List<float>
+* double, double?, double[], List<double>
 
 In addition to these types, you can add your own type converters by providing implementations of the `ITypeConverter` interface to the `AddTypeConverter<T>()` method of `ConfigurationBuilder`. For convenience, the `LambdaConverter` is provided, that makes it easier to implement your own type converter:
 ```C#

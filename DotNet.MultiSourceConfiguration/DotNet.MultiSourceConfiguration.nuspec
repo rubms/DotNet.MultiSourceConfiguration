@@ -2,7 +2,7 @@
 <package >
 	<metadata>
 		<id>DotNet.MultiSourceConfiguration</id>
-		<version>0.6.0</version>
+		<version>0.7.0</version>
 		<title>DotNet.MultiSourceConfiguration</title>
 		<authors>Rubén Martínez</authors>
 		<owners>Rubén Martínez</owners>
@@ -10,7 +10,7 @@
 		<projectUrl>https://github.com/rubms/DotNet.MultiSourceConfiguration</projectUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>
 		<description>Library for reading configuration from multiple sources in .NET. Current sources are in memory properties, app settings file, environment variables and command line arguments. It is also possible to implement your own configuration sources (like database, consul, etcd, etc.)</description>
-		<releaseNotes>Added new, non nullable, property types: int, long, decimal, double, foat and bool. Added new operation, TryGetStringValue, in order to directly retrieve the string value of a given property name (instead of populating a configuration object). Modified the library to leave not found properties untouched in configuration objects (instead of forcibly setting the default value to that object property. This way users can set default values in the class constructor before populating the configuration object with DotNet.MultiSourceConfiguration and the already set values will not be overwritten.</releaseNotes>
+		<releaseNotes>Added the HandleNonDecoratedProperties property, which tells an IConfigurationBuilder to also handle non-decorated configuration object properties. Added the possibility of specifying a property prefix in the IConfigurationBuilder.Build&lt;&gt;() function. Added new property types: List&lt;string&gt;, List&lt;int&gt;, List&lt;long&gt;, List&lt;double&gt;, List&lt;float&gt;, List&lt;decimal&gt; and List&lt;bool&gt;.</releaseNotes>
 		<copyright>Copyright 2017</copyright>
 		<tags>Configuration Source Multisource Environment Variables Command Line</tags>
 	</metadata>

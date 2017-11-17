@@ -12,6 +12,14 @@ namespace MultiSourceConfiguration.Config
         TimeSpan CacheExpiration { get; set; }
 
         /// <summary>
+        /// Flag indicating whether the properties, in the configuration object, that have not
+        /// been decorated with the Property annotation must be populated or not. For those properties,
+        /// without an annotation, the name of the property itself will be used as configuration property name.
+        /// The default value is false (non-decorated properties are ignored).
+        /// </summary>
+        bool HandleNonDecoratedProperties { get; set; }
+
+        /// <summary>
         /// Adds more configuration sources to this configuration builder. Configuration sources
         /// are implementations of <see cref="IStringConfigSource"/> able to retrieve string
         /// property values given a property name. You can provide your own configuration 
@@ -37,7 +45,7 @@ namespace MultiSourceConfiguration.Config
         /// </summary>
         /// <typeparam name="T">Type of the configuration object to instance and populate.</typeparam>
         /// <returns>New instance of T, populated with the values read form configuration.</returns>
-        T Build<T>() where T : class, new();
+        T Build<T>(string prefix = null) where T : class, new();
 
         /// <summary>
         /// Tries to get the string value of the specified property name.

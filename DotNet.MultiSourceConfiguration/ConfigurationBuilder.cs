@@ -4,14 +4,14 @@ using System.Linq;
 using MultiSourceConfiguration.Config.ConfigSource;
 using MultiSourceConfiguration.Config.Implementation;
 using System.Runtime.Caching;
-using System.Globalization;
 using System.Reflection;
+using DotNet.MultiSourceConfiguration.Implementation;
 
 namespace MultiSourceConfiguration.Config
 {
     public class ConfigurationBuilder : IConfigurationBuilder
     {
-        private readonly Dictionary<Type, UnifiedConverter> converters = new Dictionary<Type, UnifiedConverter>();
+        private readonly Dictionary<Type, UnifiedConverter> converters;
         private List<IStringConfigSource> stringConfigSources;
         private MemoryCache memoryCache;
         private TimeSpan _cacheExpiration;
@@ -19,31 +19,11 @@ namespace MultiSourceConfiguration.Config
         public ConfigurationBuilder()
         {
             stringConfigSources = new List<IStringConfigSource>();
-
-            AddTypeConverter(new LambdaConverter<bool?>(null, s => Boolean.Parse(s)));
-            AddTypeConverter(new LambdaConverter<bool[]>(new bool[0], s => s.Split(',').Select(Boolean.Parse).ToArray()));
-            AddTypeConverter(new LambdaConverter<bool>(false, s => Boolean.Parse(s)));
-            AddTypeConverter(new LambdaConverter<int?>(null, s => Int32.Parse(s, CultureInfo.InvariantCulture)));
-            AddTypeConverter(new LambdaConverter<int[]>(new int[0], s => s.Split(',').Select(x => Int32.Parse(x, CultureInfo.InvariantCulture)).ToArray()));
-            AddTypeConverter(new LambdaConverter<int>(0, s => Int32.Parse(s, CultureInfo.InvariantCulture)));
-            AddTypeConverter(new LambdaConverter<string>(null, s => s));
-            AddTypeConverter(new LambdaConverter<string[]>(new string[0], s => s.Split(',')));
-            AddTypeConverter(new LambdaConverter<long?>(null, s => Int64.Parse(s, CultureInfo.InvariantCulture)));
-            AddTypeConverter(new LambdaConverter<long[]>(new long[0], s => s.Split(',').Select(x => Int64.Parse(x, CultureInfo.InvariantCulture)).ToArray()));
-            AddTypeConverter(new LambdaConverter<long>(0, s => Int64.Parse(s, CultureInfo.InvariantCulture)));
-            AddTypeConverter(new LambdaConverter<double?>(null, s => double.Parse(s, CultureInfo.InvariantCulture)));
-            AddTypeConverter(new LambdaConverter<double[]>(new double[0], s => s.Split(',').Select(x => double.Parse(x, CultureInfo.InvariantCulture)).ToArray()));
-            AddTypeConverter(new LambdaConverter<double>(0, s => double.Parse(s, CultureInfo.InvariantCulture)));
-            AddTypeConverter(new LambdaConverter<decimal?>(null, s => decimal.Parse(s, CultureInfo.InvariantCulture)));
-            AddTypeConverter(new LambdaConverter<decimal[]>(new decimal[0], s => s.Split(',').Select(x => decimal.Parse(x, CultureInfo.InvariantCulture)).ToArray()));
-            AddTypeConverter(new LambdaConverter<decimal>(0, s => decimal.Parse(s, CultureInfo.InvariantCulture)));
-            AddTypeConverter(new LambdaConverter<float?>(null, s => float.Parse(s, CultureInfo.InvariantCulture)));
-            AddTypeConverter(new LambdaConverter<float[]>(new float[0], s => s.Split(',').Select(x => float.Parse(x, CultureInfo.InvariantCulture)).ToArray()));
-            AddTypeConverter(new LambdaConverter<float>(0, s => float.Parse(s, CultureInfo.InvariantCulture)));
+            converters = DefaultConverterFactory.GetDefaultConverters();
 
             memoryCache = new MemoryCache("MultiSourceConfiguration");
-
             _cacheExpiration = TimeSpan.FromSeconds(0);
+            HandleNonDecoratedProperties = false;
         }
 
         public TimeSpan CacheExpiration {
@@ -59,9 +39,11 @@ namespace MultiSourceConfiguration.Config
             }
         }
 
+        public bool HandleNonDecoratedProperties { get; set; }
+
         public void AddTypeConverter<T>(ITypeConverter<T> converter)
         {
-            converters.Add(typeof(T), new TypeConverterWrapper<T>(converter));
+            converters.AddTypeConverter(new TypeConverterWrapper<T>(converter));
         }
 
         public void AddSources(params IStringConfigSource[] stringConfigSources)
@@ -71,7 +53,7 @@ namespace MultiSourceConfiguration.Config
             this.stringConfigSources.AddRange(stringConfigSources);
         }
 
-        public T Build<T>() where T : class, new()
+        public T Build<T>(string propertiesPrefix=null) where T : class, new()
         {
             T result = memoryCache.Get(typeof(T).FullName) as T;
             if (result != null)
@@ -81,9 +63,9 @@ namespace MultiSourceConfiguration.Config
             var dtoProperties = typeof(T).GetProperties();
             foreach (var dtoProperty in dtoProperties)
             {
-                if (dtoProperty.IsDefined(typeof(PropertyAttribute), false))
+                if (HandleNonDecoratedProperties || dtoProperty.IsDefined(typeof(PropertyAttribute), false))
                 {
-                    SetPropertyValue<T>(result, dtoProperty);
+                    SetPropertyValue<T>(result, dtoProperty, propertiesPrefix);
                 }
             }
 
@@ -108,9 +90,12 @@ namespace MultiSourceConfiguration.Config
             return found;
         }
 
-        private void SetPropertyValue<T>(T configurationObject, PropertyInfo dtoProperty)
+        private void SetPropertyValue<T>(T configurationObject, PropertyInfo dtoProperty, string propertiesPrefix)
         {
             var propertyAttribute = dtoProperty.GetCustomAttributes(typeof(PropertyAttribute), false).FirstOrDefault() as PropertyAttribute;
+            // If not explicit Property anotation is provided, take the object property name as configuration property.
+            if (propertyAttribute == null)
+                propertyAttribute = new PropertyAttribute(dtoProperty.Name);
 
             UnifiedConverter converter;
             string value;
@@ -118,7 +103,7 @@ namespace MultiSourceConfiguration.Config
             if (!converters.TryGetValue(dtoProperty.PropertyType, out converter))
                 throw new InvalidOperationException(string.Format("Unsupported type {0} for field {1}", dtoProperty.PropertyType.Name, propertyAttribute.Property));
 
-            if (TryGetStringValue(propertyAttribute.Property, out value)) {
+            if (TryGetStringValue((propertiesPrefix ?? "") + propertyAttribute.Property, out value)) {
                 dtoProperty.SetValue(configurationObject, converter.FromString(value));
             }
             else { 

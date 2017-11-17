@@ -9,223 +9,10 @@ namespace MultiSourceConfiguration.Config.Tests
 	[TestFixture]
 	public class ConfigurationBuilderTests
 	{
-        private class IntPropertyDto
-        {
-            [Property("test.int.property", Required = false)]
-            public int IntProperty { get; set; }
-        }
-        [Test]
-        public void IntValuesAreCorrectlyRetrieved()
-        {
-            var configurationBuilder = new ConfigurationBuilder();
-            var memorySource = new MemorySource();
-            memorySource.Add("test.int.property", "123");
-            configurationBuilder.AddSources(memorySource);
-            var testConfigInstance = configurationBuilder.Build<IntPropertyDto>();
-            Assert.AreEqual(123, testConfigInstance.IntProperty);
-        }
-
-        private class NullableIntPropertyDto
-        {
-            [Property("test.int.property", Required = false)]
-            public int? IntProperty { get; set; }
-        }
-        [Test]
-        public void NullableIntValuesAreCorrectlyRetrieved()
-        {
-            var configurationBuilder = new ConfigurationBuilder();
-            var memorySource = new MemorySource();
-            memorySource.Add("test.int.property", "123");
-            configurationBuilder.AddSources(memorySource);
-            var testConfigInstance = configurationBuilder.Build<NullableIntPropertyDto>();
-            Assert.AreEqual(123, testConfigInstance.IntProperty);
-        }
-
         private class StringPropertyDto
         {
             [Property("test.string.property", Required = false)]
             public string StringProperty { get; set; }
-        }
-        [Test]
-        public void StringValuesAreCorrectlyRetrieved()
-        {
-            var configurationBuilder = new ConfigurationBuilder();
-            var memorySource = new MemorySource();
-            memorySource.Add("test.string.property", "test");
-            configurationBuilder.AddSources(memorySource);
-            var testConfigInstance = configurationBuilder.Build<StringPropertyDto>();
-            Assert.AreEqual("test", testConfigInstance.StringProperty);
-        }
-
-        private class LongPropertyDto
-        {
-            [Property("test.long.property", Required = false)]
-            public long LongProperty { get; set; }
-        }
-        [Test]
-        public void LongValuesAreCorrectlyRetrieved()
-        {
-            var configurationBuilder = new ConfigurationBuilder();
-            var memorySource = new MemorySource();
-            memorySource.Add("test.long.property", "123123123123");
-            configurationBuilder.AddSources(memorySource);
-            var testConfigInstance = configurationBuilder.Build<LongPropertyDto>();
-            Assert.AreEqual(123123123123L, testConfigInstance.LongProperty);
-        }
-
-        private class NullableLongPropertyDto
-        {
-            [Property("test.long.property", Required = false)]
-            public long? LongProperty { get; set; }
-        }
-        [Test]
-        public void NullableLongValuesAreCorrectlyRetrieved()
-        {
-            var configurationBuilder = new ConfigurationBuilder();
-            var memorySource = new MemorySource();
-            memorySource.Add("test.long.property", "123123123123");
-            configurationBuilder.AddSources(memorySource);
-            var testConfigInstance = configurationBuilder.Build<NullableLongPropertyDto>();
-            Assert.AreEqual(123123123123L, testConfigInstance.LongProperty);
-        }
-
-        private class DecimalPropertyDto
-        {
-            [Property("test.decimal.property", Required = false)]
-            public decimal DecimalProperty { get; set; }
-        }
-        [Test]
-        public void DecimalValuesAreCorrectlyRetrieved()
-        {
-            var configurationBuilder = new ConfigurationBuilder();
-            var memorySource = new MemorySource();
-            memorySource.Add("test.decimal.property", "123123.123123");
-            configurationBuilder.AddSources(memorySource);
-            var testConfigInstance = configurationBuilder.Build<DecimalPropertyDto>();
-            Assert.AreEqual(123123.123123m, testConfigInstance.DecimalProperty);
-        }
-
-        private class NullableDecimalPropertyDto
-        {
-            [Property("test.decimal.property", Required = false)]
-            public decimal? DecimalProperty { get; set; }
-        }
-        [Test]
-        public void NullableDecimalValuesAreCorrectlyRetrieved()
-        {
-            var configurationBuilder = new ConfigurationBuilder();
-            var memorySource = new MemorySource();
-            memorySource.Add("test.decimal.property", "123123.123123");
-            configurationBuilder.AddSources(memorySource);
-            var testConfigInstance = configurationBuilder.Build<NullableDecimalPropertyDto>();
-            Assert.AreEqual(123123.123123m, testConfigInstance.DecimalProperty);
-        }
-
-        private class DoublePropertyDto
-        {
-            [Property("test.double.property", Required = false)]
-            public double DoubleProperty { get; set; }
-        }
-        [Test]
-        public void DoubleValuesAreCorrectlyRetrieved()
-        {
-            var configurationBuilder = new ConfigurationBuilder();
-            var memorySource = new MemorySource();
-            memorySource.Add("test.double.property", "123123.123123");
-            configurationBuilder.AddSources(memorySource);
-            var testConfigInstance = configurationBuilder.Build<DoublePropertyDto>();
-            Assert.AreEqual(123123.123123d, testConfigInstance.DoubleProperty);
-        }
-
-        private class NullableDoublePropertyDto
-        {
-            [Property("test.double.property", Required = false)]
-            public double? DoubleProperty { get; set; }
-        }
-        [Test]
-        public void NullableDoubleValuesAreCorrectlyRetrieved()
-        {
-            var configurationBuilder = new ConfigurationBuilder();
-            var memorySource = new MemorySource();
-            memorySource.Add("test.double.property", "123123.123123");
-            configurationBuilder.AddSources(memorySource);
-            var testConfigInstance = configurationBuilder.Build<NullableDoublePropertyDto>();
-            Assert.AreEqual(123123.123123d, testConfigInstance.DoubleProperty);
-        }
-
-        private class FloatPropertyDto
-        {
-            [Property("test.float.property", Required = false)]
-            public float FloatProperty { get; set; }
-        }
-        [Test]
-        public void FloatValuesAreCorrectlyRetrieved()
-        {
-            var configurationBuilder = new ConfigurationBuilder();
-            var memorySource = new MemorySource();
-            memorySource.Add("test.float.property", "123.123");
-            configurationBuilder.AddSources(memorySource);
-            var testConfigInstance = configurationBuilder.Build<FloatPropertyDto>();
-            Assert.AreEqual(123.123f, testConfigInstance.FloatProperty);
-        }
-
-        private class NullableFloatPropertyDto
-        {
-            [Property("test.float.property", Required = false)]
-            public float? FloatProperty { get; set; }
-        }
-        [Test]
-        public void NullableFloatValuesAreCorrectlyRetrieved()
-        {
-            var configurationBuilder = new ConfigurationBuilder();
-            var memorySource = new MemorySource();
-            memorySource.Add("test.float.property", "123.123");
-            configurationBuilder.AddSources(memorySource);
-            var testConfigInstance = configurationBuilder.Build<NullableFloatPropertyDto>();
-            Assert.AreEqual(123.123f, testConfigInstance.FloatProperty);
-        }
-
-        private class BoolPropertyDto
-        {
-            [Property("test.bool.property", Required = false)]
-            public bool BoolProperty { get; set; }
-        }
-        [Test]
-        public void TrueBoolValuesAreCorrectlyRetrieved()
-        {
-            var configurationBuilder = new ConfigurationBuilder();
-            var memorySource = new MemorySource();
-            memorySource.Add("test.bool.property", "true");
-            configurationBuilder.AddSources(memorySource);
-            var testConfigInstance = configurationBuilder.Build<BoolPropertyDto>();
-            Assert.AreEqual(true, testConfigInstance.BoolProperty);
-        }
-
-        private class NullableBoolPropertyDto
-        {
-            [Property("test.bool.property", Required = false)]
-            public bool? BoolProperty { get; set; }
-        }
-        [Test]
-        public void NullableTrueBoolValuesAreCorrectlyRetrieved()
-        {
-            var configurationBuilder = new ConfigurationBuilder();
-            var memorySource = new MemorySource();
-            memorySource.Add("test.bool.property", "true");
-            configurationBuilder.AddSources(memorySource);
-            var testConfigInstance = configurationBuilder.Build<NullableBoolPropertyDto>();
-            Assert.AreEqual(true, testConfigInstance.BoolProperty);
-        }
-
-        [Test]
-        public void FalseBoolValuesAreCorrectlyRetrieved()
-        {
-            var configurationBuilder = new ConfigurationBuilder();
-            var memorySource = new MemorySource();
-            memorySource.Add("test.bool.property", "false");
-            configurationBuilder.AddSources(memorySource);
-            var testConfigInstance = configurationBuilder.Build<BoolPropertyDto>();
-            Assert.AreEqual(false, testConfigInstance.BoolProperty);
         }
 
         [Test]
@@ -412,6 +199,56 @@ namespace MultiSourceConfiguration.Config.Tests
                 var configDto = configurationBuilder.Build<PropertyWithDefaultRequiredProperty>();
                 Assert.AreEqual(0, configDto.testProperty);
             });
+        }
+
+        private class NonDecoratedPropertyDto
+        {
+            public string NonDecoratedTestProperty { get; set; }
+        }
+        [Test]
+        public void NonDecoratedPropertiesAreByDefaultIgnored()
+        {
+            var propertySource1 = new MemorySource();
+            propertySource1.Add("NonDecoratedTestProperty", "testValue");
+
+            ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
+            configurationBuilder.AddSources(propertySource1);
+
+            var configDto = configurationBuilder.Build<NonDecoratedPropertyDto>();
+            Assert.IsNull(configDto.NonDecoratedTestProperty);
+        }
+
+        [Test]
+        public void WhenActiveNonDecoratedPropertiesArePopulatedUsingTheNameOfThePropertyItself()
+        {
+            var propertySource1 = new MemorySource();
+            propertySource1.Add("NonDecoratedTestProperty", "testValue");
+
+            ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
+            configurationBuilder.AddSources(propertySource1);
+            configurationBuilder.HandleNonDecoratedProperties = true;
+
+            var configDto = configurationBuilder.Build<NonDecoratedPropertyDto>();
+            Assert.AreEqual("testValue", configDto.NonDecoratedTestProperty);
+        }
+
+        private class PropertyWithPrefixDto
+        {
+            [Property("testPropertyName")]
+            public string testProperty { get; set; }
+        }
+
+        [Test]
+        public void WhenSpecifiedThePropertiesPrefixIsUsed()
+        {
+            var propertySource1 = new MemorySource();
+            propertySource1.Add("testPrefix.testPropertyName", "testValue");
+
+            ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
+            configurationBuilder.AddSources(propertySource1);
+
+            var configDto = configurationBuilder.Build<PropertyWithPrefixDto>(propertiesPrefix: "testPrefix.");
+            Assert.AreEqual("testValue", configDto.testProperty);
         }
     }
 }
