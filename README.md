@@ -1,5 +1,5 @@
 # DotNet.MultiSourceConfiguration
-[![NuGet Version](https://img.shields.io/nuget/v/DotNet.MultiSourceConfiguration.svg?style=flat)](https://www.nuget.org/packages/DotNet.MultiSourceConfiguration)
+[![NuGet Version](https://img.shields.io/nuget/v/DotNet.MultiSourceConfiguration.svg)](https://www.nuget.org/packages/DotNet.MultiSourceConfiguration)
 [![Build Status](https://travis-ci.org/rubms/DotNet.MultiSourceConfiguration.svg?branch=master)](https://travis-ci.org/rubms/DotNet.MultiSourceConfiguration)
 
 Configuration library with multiple sources for .NET. 
@@ -12,7 +12,7 @@ The Microsoft.Extensions.Configuration project follow a very similar approach bu
 * At the moment of writing DotNet.MultiSourceConfiguration, the existing documentation was outdated and did not work with the last version of the library.
 
 ## How to use it
-The approach followed by DotNet.MultiSourceConfiguration is the population of configuration classes, that can subsequently be registered on an IOC container or made avaialable as a static property. The properties of the configuration class must be decorated with the `Property` attribute, indicating the name of the property that must be mapped to the property:
+The approach followed by DotNet.MultiSourceConfiguration is the population of configuration classes, that can subsequently be registered on an IOC container or made avaialable as a static property. The properties of the configuration class must be decorated with the `Property` attribute, indicating the name of the configuration property that must be mapped to the class property:
 
 ```C#
     public class TestConfigurationDto
@@ -21,7 +21,8 @@ The approach followed by DotNet.MultiSourceConfiguration is the population of co
         [Property("test.int.property")]
         public int? IntProperty { get; set; }
 
-        // The required condition of a property can be explicitly included
+        // The required condition of a property can be explicitly included.
+	// If no value is provided InvalidOperationException is thrown.
         [Property("test.string.property", Required = true)]
         public string StringProperty { get; set; }
 
@@ -34,7 +35,7 @@ The approach followed by DotNet.MultiSourceConfiguration is the population of co
         // case it is not provided via configuration.
         [Property("test.bool.property", Default = "true")]
         public bool? BoolProperty { get; set; }
-	}
+    }
 ```
 
 
@@ -77,17 +78,16 @@ Properties in configuration objects that you want to populate with DotNet.MultiS
     [Test]
     public void Test()
     {
-	    var memoryConfigurationSource = new MemorySource();
+        var memoryConfigurationSource = new MemorySource();
     	memoryConfigurationSource.Add("test.int.property", "123");
 
-		IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
-		configurationBuilder.AddSources(memoryConfigurationSource);
+        IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
+        configurationBuilder.AddSources(memoryConfigurationSource);
 
-		TestConfigurationDto configurationDto = configurationBuilder.Build<TestConfigurationDto>();
+        TestConfigurationDto configurationDto = configurationBuilder.Build<TestConfigurationDto>();
         
         Assert.AreEqual(123, configurationDto.IntProperty);
-	}
-    
+    }
 ```
 
 The `Property` annotation accepts the following attributes:
@@ -123,17 +123,17 @@ In this case, the name of the configuration object property itself will be used 
     [Test]
     public void Test()
     {
-	    var memoryConfigurationSource = new MemorySource();
+        var memoryConfigurationSource = new MemorySource();
     	memoryConfigurationSource.Add("NonDecoratedProperty", "123");
 
-		IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
-		configurationBuilder.AddSources(memoryConfigurationSource);
-		configurationBuilder.HandleNonDecoratedProperties = true;
+        IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
+        configurationBuilder.AddSources(memoryConfigurationSource);
+        configurationBuilder.HandleNonDecoratedProperties = true;
 
-		TestConfigurationDto configurationDto = configurationBuilder.Build<TestConfigurationDto>();
+        TestConfigurationDto configurationDto = configurationBuilder.Build<TestConfigurationDto>();
         
         Assert.AreEqual(123, configurationDto.NonDecoratedProperty);
-	}
+    }
     
 ```
 This behavior is useful when you are introducing DotNet.MultiSourceConfiguration in an already existing application that has a big number of configuration objects.
@@ -151,21 +151,20 @@ It is possible to indicate a prefix when building a configuration object in the 
     
     [Test]
     public void Test()
-    {
-	    var memoryConfigurationSource = new MemorySource();
-    	memoryConfigurationSource.Add("myComponent1.testProperty", "1");
-    	memoryConfigurationSource.Add("myComponent2.testProperty", "2");
+    {    
+        var memoryConfigurationSource = new MemorySource();
+        memoryConfigurationSource.Add("myComponent1.testProperty", "1");
+        memoryConfigurationSource.Add("myComponent2.testProperty", "2");
 
-		IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
-		configurationBuilder.AddSources(memoryConfigurationSource);
+        IConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
+        configurationBuilder.AddSources(memoryConfigurationSource);
 
-		TestConfigurationDto configurationDto1 = configurationBuilder.Build<TestConfigurationDto>(propertiesPrefix: "myComponent1.");
-		TestConfigurationDto configurationDto2 = configurationBuilder.Build<TestConfigurationDto>(propertiesPrefix: "myComponent2.");
+        TestConfigurationDto configurationDto1 = configurationBuilder.Build<TestConfigurationDto>(propertiesPrefix: "myComponent1.");
+        TestConfigurationDto configurationDto2 = configurationBuilder.Build<TestConfigurationDto>(propertiesPrefix: "myComponent2.");
         
         Assert.AreEqual(1, configurationDto1.IntProperty);
         Assert.AreEqual(2, configurationDto2.IntProperty);
-	}
-    
+    }
 ```
 
 This is useful when you want to reuse the same configuration object in different contexts, each one having a different prefix.
@@ -184,7 +183,7 @@ In addition to these property sources you can implement your own by providing im
 ```C#
     public interface IStringConfigSource
     {
-		TimeSpan CacheExpiration { set; }
+        TimeSpan CacheExpiration { set; }
         bool TryGetString(string property, out string value);
     }
 ```
