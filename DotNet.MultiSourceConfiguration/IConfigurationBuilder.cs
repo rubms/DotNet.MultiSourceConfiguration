@@ -44,8 +44,10 @@ namespace MultiSourceConfiguration.Config
         /// the configuration sources.
         /// </summary>
         /// <typeparam name="T">Type of the configuration object to instance and populate.</typeparam>
+        /// <param name="prefix">A prefix to apply to each property name when finding a match in the property sources.</param>
+        /// <param name="handleNonDecoratedProperties">Whether non-decorated config DTO properties should be populated (matched by property name) or not.</param>
         /// <returns>New instance of T, populated with the values read form configuration.</returns>
-        T Build<T>(string prefix = null) where T : class, new();
+        T Build<T>(string prefix = null, bool handleNonDecoratedProperties = false) where T : class, new();
 
         /// <summary>
         /// Tries to get the string value of the specified property name.

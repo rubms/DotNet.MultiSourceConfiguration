@@ -250,5 +250,48 @@ namespace MultiSourceConfiguration.Config.Tests
             var configDto = configurationBuilder.Build<PropertyWithPrefixDto>(propertiesPrefix: "testPrefix.");
             Assert.AreEqual("testValue", configDto.testProperty);
         }
+
+        private class UndecoratedPropertyDto
+        {
+            public string testProperty { get; set; }
+        }
+        [Test]
+        public void WhenHandleUndecoratedPropertiesIsUsedTheUndecoratedPropertiesArePopulated()
+        {
+            var propertySource1 = new MemorySource();
+            propertySource1.Add("testProperty", "testValue");
+
+            ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
+            configurationBuilder.AddSources(propertySource1);
+
+            var configDto = configurationBuilder.Build<UndecoratedPropertyDto>(handleNonDecoratedProperties: true);
+            Assert.AreEqual("testValue", configDto.testProperty);
+        }
+
+        [Test]
+        public void ByDefaultTheUndecoratedPropertiesAreNotPopulated()
+        {
+            var propertySource1 = new MemorySource();
+            propertySource1.Add("testProperty", "testValue");
+
+            ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
+            configurationBuilder.AddSources(propertySource1);
+
+            var configDto = configurationBuilder.Build<UndecoratedPropertyDto>();
+            Assert.IsNull(configDto.testProperty);
+        }
+
+        [Test]
+        public void BothHandleUndecoratedPropertiesAndPrefixCorectlyWorkTogether()
+        {
+            var propertySource1 = new MemorySource();
+            propertySource1.Add("someprefix.testProperty", "testValue");
+
+            ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
+            configurationBuilder.AddSources(propertySource1);
+
+            var configDto = configurationBuilder.Build<UndecoratedPropertyDto>(propertiesPrefix: "someprefix.", handleNonDecoratedProperties: true);
+            Assert.AreEqual("testValue", configDto.testProperty);
+        }
     }
 }

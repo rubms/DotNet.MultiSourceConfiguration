@@ -53,7 +53,7 @@ namespace MultiSourceConfiguration.Config
             this.stringConfigSources.AddRange(stringConfigSources);
         }
 
-        public T Build<T>(string propertiesPrefix=null) where T : class, new()
+        public T Build<T>(string propertiesPrefix=null, bool handleNonDecoratedProperties=false) where T : class, new()
         {
             T result = memoryCache.Get(typeof(T).FullName) as T;
             if (result != null)
@@ -63,7 +63,7 @@ namespace MultiSourceConfiguration.Config
             var dtoProperties = typeof(T).GetProperties();
             foreach (var dtoProperty in dtoProperties)
             {
-                if (HandleNonDecoratedProperties || dtoProperty.IsDefined(typeof(PropertyAttribute), false))
+                if (HandleNonDecoratedProperties || handleNonDecoratedProperties || dtoProperty.IsDefined(typeof(PropertyAttribute), false))
                 {
                     SetPropertyValue<T>(result, dtoProperty, propertiesPrefix);
                 }
