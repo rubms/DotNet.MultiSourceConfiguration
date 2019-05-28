@@ -197,16 +197,17 @@ It is also possible to perform several calls to `AddSources`. The given configur
 ### Property Types
 
 The following types for configuration properties are available:
-* bool, bool?, bool[], List<bool>
-* string, string[], List<string>
-* int, int?, int[], List<int>
-* long, long?, long[], List<long>
-* decimal, decimal?, decimal[], List<decimal>
-* float, float?, float[], List<float>
-* double, double?, double[], List<double>
+
+* bool, bool?, bool[], List<bool>, IEnumerable<bool>
+* string, string[], List<string>, IEnumerable<string>
+* int, int?, int[], List<int>, IEnumerable<int>
+* long, long?, long[], List<long>, IEnumerable<long>
+* decimal, decimal?, decimal[], List<decimal>, IEnumerable<decimal>
+* float, float?, float[], List<float>, IEnumerable<float>
+* double, double?, double[], List<double>, IEnumerable<double>
 
 In addition to these types, you can add your own type converters by providing implementations of the `ITypeConverter` interface to the `AddTypeConverter<T>()` method of `ConfigurationBuilder`. For convenience, the `LambdaConverter` is provided, that makes it easier to implement your own type converter:
+
 ```C#
     configurationBuilder.AddTypeConverter(new LambdaConverter<MyType>(null /* Default value */, s => MyType.Parse(s) /* Converter lambda */));
 ```
-
