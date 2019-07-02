@@ -101,7 +101,14 @@ namespace MultiSourceConfiguration.Config
             string value;
 
             if (!converters.TryGetValue(dtoProperty.PropertyType, out converter))
-                throw new InvalidOperationException(string.Format("Unsupported type {0} for field {1}", dtoProperty.PropertyType.Name, propertyAttribute.Property));
+            {
+                if (dtoProperty.PropertyType.IsEnum)
+                {
+                    converter = new EnumConverter(dtoProperty.PropertyType);
+                }
+                else
+                    throw new InvalidOperationException(string.Format("Unsupported type {0} for field {1}", dtoProperty.PropertyType.Name, propertyAttribute.Property));
+            }
 
             if (TryGetStringValue((propertiesPrefix ?? "") + propertyAttribute.Property, out value)) {
                 dtoProperty.SetValue(configurationObject, converter.FromString(value));

@@ -293,5 +293,23 @@ namespace MultiSourceConfiguration.Config.Tests
             var configDto = configurationBuilder.Build<UndecoratedPropertyDto>(propertiesPrefix: "someprefix.", handleNonDecoratedProperties: true);
             Assert.AreEqual("testValue", configDto.testProperty);
         }
+
+        private class DtoWithEnumProperties
+        {
+            [Property("testProperty")]
+            public DayOfWeek testProperty { get; set; }
+        }
+        [Test]
+        public void EnumPropertiesAreAutomaticallyConverted()
+        {
+            var propertySource1 = new MemorySource();
+            propertySource1.Add("testProperty", "Monday");
+
+            ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
+            configurationBuilder.AddSources(propertySource1);
+
+            var configDto = configurationBuilder.Build<DtoWithEnumProperties>();
+            Assert.AreEqual(DayOfWeek.Monday, configDto.testProperty);
+        }
     }
 }
