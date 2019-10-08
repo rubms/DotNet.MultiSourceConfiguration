@@ -98,6 +98,44 @@ namespace MultiSourceConfiguration.Config.Tests
         }
 
         [Test]
+        public void ConfigurationIsOverwrittenInTheProvidedSourceOrderWithSpecificPriority()
+        {
+            string testPropertyName = "testPropertyName";
+            var propertySource1 = new MemorySource();
+            propertySource1.Add(testPropertyName, "1");
+
+            var propertySource2 = new MemorySource();
+            propertySource2.Add(testPropertyName, "2");
+
+            ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
+            configurationBuilder.AddSources(2, propertySource2);
+            configurationBuilder.AddSources(1, propertySource1);
+
+            string obtainedValue;
+            Assert.IsTrue(configurationBuilder.TryGetStringValue(testPropertyName, out obtainedValue));
+            Assert.AreEqual("2", obtainedValue);
+        }
+
+        [Test]
+        public void ConfigurationIsOverwrittenInTheProvidedSourceOrderWithDefaultPriorityOf1000()
+        {
+            string testPropertyName = "testPropertyName";
+            var propertySource1 = new MemorySource();
+            propertySource1.Add(testPropertyName, "1");
+
+            var propertySource2 = new MemorySource();
+            propertySource2.Add(testPropertyName, "2");
+
+            ConfigurationBuilder configurationBuilder = new ConfigurationBuilder();
+            configurationBuilder.AddSources(2000, propertySource2);
+            configurationBuilder.AddSources(propertySource1);
+
+            string obtainedValue;
+            Assert.IsTrue(configurationBuilder.TryGetStringValue(testPropertyName, out obtainedValue));
+            Assert.AreEqual("2", obtainedValue);
+        }
+
+        [Test]
         public void ConfigurationSetByASourceIsNotMistakenlyOverwrittenBySubsequentSources()
         {
             string testPropertyName = "testPropertyName";

@@ -12,13 +12,13 @@ namespace MultiSourceConfiguration.Config
     public class ConfigurationBuilder : IConfigurationBuilder
     {
         private readonly Dictionary<Type, UnifiedConverter> converters;
-        private List<IStringConfigSource> stringConfigSources;
+        private Dictionary<int, List<IStringConfigSource>> stringConfigSources;
         private MemoryCache memoryCache;
         private TimeSpan _cacheExpiration;
 
         public ConfigurationBuilder()
         {
-            stringConfigSources = new List<IStringConfigSource>();
+            stringConfigSources = new Dictionary<int, List<IStringConfigSource>>();
             converters = DefaultConverterFactory.GetDefaultConverters();
 
             memoryCache = new MemoryCache("MultiSourceConfiguration");
@@ -35,7 +35,8 @@ namespace MultiSourceConfiguration.Config
             set
             {
                 _cacheExpiration = value;
-                stringConfigSources.ForEach(configSource => configSource.CacheExpiration = value);
+                foreach(var configSourceList in stringConfigSources.Values)
+                    configSourceList.ForEach(source => source.CacheExpiration = value);
             }
         }
 
@@ -48,9 +49,19 @@ namespace MultiSourceConfiguration.Config
 
         public void AddSources(params IStringConfigSource[] stringConfigSources)
         {
+            AddSources(1000, stringConfigSources);
+        }
+
+        public void AddSources(int priority, params IStringConfigSource[] stringConfigSources)
+        {
+            if (!this.stringConfigSources.ContainsKey(priority))
+                this.stringConfigSources[priority] = new List<IStringConfigSource>();
+
             foreach (var stringConfigSource in stringConfigSources)
+            {
                 stringConfigSource.CacheExpiration = _cacheExpiration;
-            this.stringConfigSources.AddRange(stringConfigSources);
+                this.stringConfigSources[priority].Add(stringConfigSource);
+            }
         }
 
         public T Build<T>(string propertiesPrefix=null, bool handleNonDecoratedProperties=false) where T : class, new()
@@ -78,13 +89,17 @@ namespace MultiSourceConfiguration.Config
         {
             bool found = false;
             propertyValue = null;
-            foreach (var configSource in this.stringConfigSources)
+
+            string obtainedValue;
+            foreach (var prioritizedConfigSourceList in this.stringConfigSources.OrderBy(x => x.Key))
             {
-                string obtainedValue;
-                if (configSource.TryGetString(propertyName, out obtainedValue))
+                foreach (var configSource in prioritizedConfigSourceList.Value)
                 {
-                    found = true;
-                    propertyValue = obtainedValue;
+                    if (configSource.TryGetString(propertyName, out obtainedValue))
+                    {
+                        found = true;
+                        propertyValue = obtainedValue;
+                    }
                 }
             }
             return found;

@@ -20,14 +20,32 @@ namespace MultiSourceConfiguration.Config
         bool HandleNonDecoratedProperties { get; set; }
 
         /// <summary>
-        /// Adds more configuration sources to this configuration builder. Configuration sources
-        /// are implementations of <see cref="IStringConfigSource"/> able to retrieve string
+        /// Adds more configuration sources to this configuration builder with a default priority of 1000. 
+        /// Higher priority numbers indicate higher priority (that is, the configuration provided by them will overwrite the one
+        /// read from sources with lower priority). Given the same priority, sources will be evaluated in the order they are provided:
+        ///  - The properties provided by the first configuration source will be read.
+        ///  - The properties provided by the second confiration source will be read, overwriting whatever was read for previous sources, and so on.
+        /// Configuration sources are implementations of <see cref="IStringConfigSource"/> able to retrieve string
         /// property values given a property name. You can provide your own configuration 
         /// sources, though some sources are available out-of-the-box for the reading of
         /// application settings, command line arguments and environment variables.
         /// </summary>
         /// <param name="stringConfigSources">List of configuration sources to add to this configuration builder.</param>
         void AddSources(params IStringConfigSource[] stringConfigSources);
+
+        /// <summary>
+        /// Adds more configuration sources to this configuration builder, specifying a priority for them.
+        /// Higher priority numbers indicate higher priority (that is, the configuration provided by them will overwrite the one
+        /// read from sources with lower priority). Given the same priority, sources will be evaluated in the order they are provided:
+        ///  - The properties provided by the first configuration source will be read.
+        ///  - The properties provided by the second confiration source will be read, overwriting whatever was read for previous sources, and so on.
+        /// Configuration sources are implementations of <see cref="IStringConfigSource"/> able to retrieve string
+        /// property values given a property name. You can provide your own configuration 
+        /// sources, though some sources are available out-of-the-box for the reading of
+        /// application settings, command line arguments and environment variables.
+        /// </summary>
+        /// <param name="stringConfigSources">List of configuration sources to add to this configuration builder.</param>
+        void AddSources(int priority, params IStringConfigSource[] stringConfigSources);
 
         /// <summary>
         /// Adds more type converters to this configuration builder. Converters are used to
